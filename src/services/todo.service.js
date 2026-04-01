@@ -33,7 +33,7 @@ class TodoService {
       const todos = await this.#fileUtiles.getUserTodos(userId);
       const targetTodo = todos.find((todo) => todo.id === todoId);
       if (!targetTodo) {
-        throw new Error(ERRORS_TEMPLATE.NOT_FOUND);
+        throw new Error(ERRORS_TEMPLATE.TODO_NOT_FOUND);
       }
       targetTodo.title = title;
       await this.#fileUtiles.updateUserTodos(userId, todos);
@@ -47,7 +47,7 @@ class TodoService {
       const todos = await this.#fileUtiles.getUserTodos(userId);
       const targetTodo = todos.find((todo) => todo.id === todoId);
       if (!targetTodo) {
-        throw new Error(ERRORS_TEMPLATE.NOT_FOUND);
+        throw new Error(ERRORS_TEMPLATE.TODO_NOT_FOUND);
       }
       targetTodo.isCompleted = isCompleted;
       await this.#fileUtiles.updateUserTodos(userId, todos);
@@ -61,7 +61,7 @@ class TodoService {
       const todos = await this.#fileUtiles.getUserTodos(userId);
       const targetTodoIndex = todos.findIndex((todo) => todo.id === todoId);
       if (targetTodoIndex === -1) {
-        throw new Error(ERRORS_TEMPLATE.NOT_FOUND);
+        throw new Error(ERRORS_TEMPLATE.TODO_NOT_FOUND);
       }
       todos.splice(targetTodoIndex, 1);
       await this.#fileUtiles.updateUserTodos(userId, todos);
