@@ -1,5 +1,5 @@
 const FileUtiles = require("../utilities/FileUtiles");
-const ERRORS_TEMPLATE = require("../constants/errors.template");
+const { ERRORS_TEMPLATE } = require("../constants/errors.template");
 const { validationResult } = require("express-validator");
 
 class ValidationHelpers {

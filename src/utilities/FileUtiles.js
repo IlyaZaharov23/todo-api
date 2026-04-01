@@ -35,6 +35,11 @@ class FileUtiles {
     parsedData[ENTITIES.USERS] = newUsers;
     await fsPromises.writeFile(this.#DB_URL, JSON.stringify(parsedData));
   }
+  async deleteUserTodos(userId) {
+    const parsedData = await this.getDataFromDB();
+    delete parsedData[ENTITIES.TODOS][userId];
+    await fsPromises.writeFile(this.#DB_URL, JSON.stringify(parsedData));
+  }
 }
 
 module.exports = FileUtiles;

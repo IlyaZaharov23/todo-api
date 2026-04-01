@@ -1,4 +1,5 @@
 const { header, query, param, body, checkExact } = require("express-validator");
+const TokenHelpers = require("../helpers/TokenHelpers");
 
 const todoRequirements = {
   token: header("Authorization")
@@ -14,7 +15,17 @@ const todoRequirements = {
     .bail()
     .customSanitizer((value) => value.split(" ")[1])
     .isJWT()
-    .withMessage("Invalid JWT token."),
+    .withMessage("Invalid JWT token.")
+    .custom((token) => {
+      const verification = TokenHelpers.checkToken(token);
+      if (!verification.isValid) {
+        if (verification.error === "jwt expired") {
+          throw new Error("Token has expired. Please login again.");
+        }
+        throw new Error("Invalid token. Authentication failed.");
+      }
+      return true;
+    }),
   queryUserId: query("userId").isUUID().withMessage("Invalid userId param."),
   title: body("title").notEmpty().withMessage("Title cannot be empty."),
   isCompleted: body("isCompleted")

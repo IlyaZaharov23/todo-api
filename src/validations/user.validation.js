@@ -8,10 +8,9 @@ const userRequirements = {
     .isEmail()
     .withMessage("Email is not valid.")
     .trim(),
-  regEmail: body("email").custom(async (value, { req }) => {
+  regEmail: body("email").custom(async (value) => {
     const userValidationHelpers = new ValidationHelpers();
-    const { email } = req.body;
-    await userValidationHelpers.isUserExist(email);
+    await userValidationHelpers.isUserExist(value);
     return true;
   }),
   password: body("password")

@@ -2,7 +2,12 @@ const { v4: uuid } = require("uuid");
 const FileUtiles = require("../utilities/FileUtiles");
 const CryptHelpers = require("../helpers/CryptHelpers");
 const TokenHelpers = require("../helpers/TokenHelpers");
-const ERRORS_TEMPLATE = require("../constants/errors.template");
+const {
+  ERRORS_TEMPLATE,
+  ERRORS_TYPE,
+  ERRORS_LOCATION,
+  ERRORS_PATH,
+} = require("../constants/errors.template");
 const ValidationError = require("../helpers/ValidationError");
 
 class UserService {
@@ -28,18 +33,18 @@ class UserService {
       if (!targetUser) {
         throw new ValidationError([
           {
-            type: "field",
+            type: ERRORS_TYPE.FIELD,
             value: data.email,
             msg: ERRORS_TEMPLATE.AUTH_ERROR,
-            path: "email",
-            location: "body",
+            path: ERRORS_PATH.EMAIL,
+            location: ERRORS_LOCATION.BODY,
           },
           {
-            type: "field",
+            type: ERRORS_TYPE.FIELD,
             value: data.password,
             msg: ERRORS_TEMPLATE.AUTH_ERROR,
-            path: "password",
-            location: "body",
+            path: ERRORS_PATH.PASSWORD,
+            location: ERRORS_LOCATION.BODY,
           },
         ]);
       }
@@ -50,11 +55,11 @@ class UserService {
       if (!isPasswordValid) {
         throw new ValidationError([
           {
-            type: "field",
+            type: ERRORS_TYPE.FIELD,
             value: data.password,
             msg: ERRORS_TEMPLATE.AUTH_ERROR,
-            path: "password",
-            location: "body",
+            path: ERRORS_PATH.PASSWORD,
+            location: ERRORS_LOCATION.BODY,
           },
         ]);
       }
