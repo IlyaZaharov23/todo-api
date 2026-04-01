@@ -13,10 +13,16 @@ class FileUtiles {
   }
   async getUserTodos(userId) {
     const parsedData = await this.getDataFromDB();
+    if (!parsedData || !parsedData[ENTITIES.TODOS]) {
+      return [];
+    }
     return parsedData[ENTITIES.TODOS][userId] || [];
   }
   async updateUserTodos(userId, todos) {
     const parsedData = await this.getDataFromDB();
+    if (!parsedData[ENTITIES.TODOS]) {
+      parsedData[ENTITIES.TODOS] = {};
+    }
     parsedData[ENTITIES.TODOS][userId] = todos;
     await fsPromises.writeFile(this.#DB_URL, JSON.stringify(parsedData));
   }

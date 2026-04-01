@@ -3,6 +3,7 @@ const FileUtiles = require("../utilities/FileUtiles");
 const CryptHelpers = require("../helpers/CryptHelpers");
 const TokenHelpers = require("../helpers/TokenHelpers");
 const ERRORS_TEMPLATE = require("../constants/errors.template");
+const ValidationError = require("../helpers/ValidationError");
 
 class UserService {
   static #fileUtiles = new FileUtiles();
@@ -25,14 +26,37 @@ class UserService {
       const users = await this.#fileUtiles.getUsers();
       const targetUser = users.find((user) => user.email === data.email);
       if (!targetUser) {
-        throw new Error(ERRORS_TEMPLATE.USER_NOT_FOUND);
+        throw new ValidationError([
+          {
+            type: "field",
+            value: data.email,
+            msg: ERRORS_TEMPLATE.AUTH_ERROR,
+            path: "email",
+            location: "body",
+          },
+          {
+            type: "field",
+            value: data.password,
+            msg: ERRORS_TEMPLATE.AUTH_ERROR,
+            path: "password",
+            location: "body",
+          },
+        ]);
       }
       const isPasswordValid = await CryptHelpers.checkPassword(
         data.password,
         targetUser.password
       );
       if (!isPasswordValid) {
-        throw new Error(ERRORS_TEMPLATE.INVALID_PASSWORD);
+        throw new ValidationError([
+          {
+            type: "field",
+            value: data.password,
+            msg: ERRORS_TEMPLATE.AUTH_ERROR,
+            path: "password",
+            location: "body",
+          },
+        ]);
       }
       const token = TokenHelpers.createToken(targetUser);
       return token;
