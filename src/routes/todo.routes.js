@@ -1,39 +1,38 @@
 const Router = require("express");
 const TodoController = require("../controllers/todo.controller");
 const todoValidator = require("../validations/todo.validation");
-const ValidationHelpers = require("../helpers/ValidationHelpers");
+const ValidationMiddleware = require("../middlewares/validation.middleware");
 
 const todoRouter = Router();
-const validationHelpers = new ValidationHelpers();
 
 todoRouter
   .route("/todos")
   .get(
     todoValidator.getTodos,
-    validationHelpers.chechValidation,
+    ValidationMiddleware.chechValidation,
     TodoController.getTodos
   )
   .post(
     todoValidator.createTodo,
-    validationHelpers.chechValidation,
+    ValidationMiddleware.chechValidation,
     TodoController.createTodo
   );
 todoRouter
   .route("/todos/:id")
   .patch(
     todoValidator.updateTodoTitle,
-    validationHelpers.chechValidation,
+    ValidationMiddleware.chechValidation,
     TodoController.updateTodoTitle
   )
   .delete(
     todoValidator.deleteTodo,
-    validationHelpers.chechValidation,
+    ValidationMiddleware.chechValidation,
     TodoController.deleteTodo
   );
 todoRouter.patch(
   "/todos/:id/isCompleted",
   todoValidator.updateTodoCompleted,
-  validationHelpers.chechValidation,
+  ValidationMiddleware.chechValidation,
   TodoController.updateTodoCompleted
 );
 

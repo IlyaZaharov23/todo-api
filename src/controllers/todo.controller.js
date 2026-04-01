@@ -1,5 +1,4 @@
 const TodoService = require("../services/todo.service");
-const { ERRORS_TEMPLATE } = require("../constants/errors.template");
 
 class TodoController {
   static async getTodos(req, res) {
