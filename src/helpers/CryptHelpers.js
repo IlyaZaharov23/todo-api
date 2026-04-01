@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+
 class CryptHelpers {
   static async hashPassword(password) {
     const saltRounds = process.env.HASH_SALT;

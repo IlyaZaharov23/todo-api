@@ -1,21 +1,20 @@
 const UserController = require("../controllers/user.controller");
 const Router = require("express");
-const ValidationHelpers = require("../helpers/ValidationHelpers");
 const userValidator = require("../validations/user.validation");
+const ValidationMiddleware = require("../middlewares/validation.middleware");
 
-const validationHelpers = new ValidationHelpers();
 const userRouter = Router();
 
 userRouter.post(
   "/login",
   userValidator.authUser,
-  validationHelpers.chechValidation,
+  ValidationMiddleware.chechValidation,
   UserController.userAuth
 );
 userRouter.post(
   "/register",
   userValidator.createUser,
-  validationHelpers.chechValidation,
+  ValidationMiddleware.chechValidation,
   UserController.userRegister
 );
 
