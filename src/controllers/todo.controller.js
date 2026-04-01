@@ -1,5 +1,5 @@
 const TodoService = require("../services/todo.service");
-const ERRORS_TEMPLATE = require("../constants/errors.template");
+const { ERRORS_TEMPLATE } = require("../constants/errors.template");
 
 class TodoController {
   static async getTodos(req, res) {
@@ -27,8 +27,8 @@ class TodoController {
       const updateTodo = await TodoService.updateTodoTitle(title, id, userId);
       res.send(updateTodo);
     } catch (error) {
-      if (error.message === ERRORS_TEMPLATE.NOT_FOUND) {
-        return res.status(404).send(ERRORS_TEMPLATE.NOT_FOUND);
+      if (error.errors?.length) {
+        return res.status(404).send(error.errors);
       }
       res.status(500).send(error.message);
     }
@@ -44,8 +44,8 @@ class TodoController {
       );
       res.send(updateTodo);
     } catch (error) {
-      if (error.message === ERRORS_TEMPLATE.NOT_FOUND) {
-        return res.status(404).send(ERRORS_TEMPLATE.NOT_FOUND);
+      if (error.errors?.length) {
+        return res.status(404).send(error.errors);
       }
       res.status(500).send(error.message);
     }
@@ -57,8 +57,8 @@ class TodoController {
       const deletedToId = await TodoService.deleteTodo(id, userId);
       res.status(200).send(deletedToId);
     } catch (error) {
-      if (error.message === ERRORS_TEMPLATE.NOT_FOUND) {
-        return res.status(404).send(ERRORS_TEMPLATE.NOT_FOUND);
+      if (error.errors?.length) {
+        return res.status(404).send(error.errors);
       }
       res.status(500).send(error.message);
     }

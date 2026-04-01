@@ -1,6 +1,12 @@
 const { v4: uuid } = require("uuid");
 const FileUtiles = require("../utilities/FileUtiles");
-const ERRORS_TEMPLATE = require("../constants/errors.template");
+const {
+  ERRORS_TEMPLATE,
+  ERRORS_TYPE,
+  ERRORS_PATH,
+  ERRORS_LOCATION,
+} = require("../constants/errors.template");
+const ValidationError = require("../helpers/ValidationError");
 
 class TodoService {
   static #fileUtiles = new FileUtiles();
@@ -33,7 +39,15 @@ class TodoService {
       const todos = await this.#fileUtiles.getUserTodos(userId);
       const targetTodo = todos.find((todo) => todo.id === todoId);
       if (!targetTodo) {
-        throw new Error(ERRORS_TEMPLATE.NOT_FOUND);
+        throw new ValidationError([
+          {
+            type: ERRORS_TYPE.FIELD,
+            value: title,
+            msg: ERRORS_TEMPLATE.TODO_NOT_FOUND,
+            path: ERRORS_PATH.TITLE,
+            location: ERRORS_LOCATION.BODY,
+          },
+        ]);
       }
       targetTodo.title = title;
       await this.#fileUtiles.updateUserTodos(userId, todos);
@@ -47,7 +61,15 @@ class TodoService {
       const todos = await this.#fileUtiles.getUserTodos(userId);
       const targetTodo = todos.find((todo) => todo.id === todoId);
       if (!targetTodo) {
-        throw new Error(ERRORS_TEMPLATE.NOT_FOUND);
+        throw new ValidationError([
+          {
+            type: ERRORS_TYPE.FIELD,
+            value: title,
+            msg: ERRORS_TEMPLATE.TODO_NOT_FOUND,
+            path: ERRORS_PATH.TITLE,
+            location: ERRORS_LOCATION.BODY,
+          },
+        ]);
       }
       targetTodo.isCompleted = isCompleted;
       await this.#fileUtiles.updateUserTodos(userId, todos);
@@ -61,10 +83,22 @@ class TodoService {
       const todos = await this.#fileUtiles.getUserTodos(userId);
       const targetTodoIndex = todos.findIndex((todo) => todo.id === todoId);
       if (targetTodoIndex === -1) {
-        throw new Error(ERRORS_TEMPLATE.NOT_FOUND);
+        throw new ValidationError([
+          {
+            type: ERRORS_TYPE.FIELD,
+            msg: ERRORS_TEMPLATE.TODO_NOT_FOUND,
+            path: ERRORS_PATH.TITLE,
+            location: ERRORS_LOCATION.BODY,
+          },
+        ]);
       }
       todos.splice(targetTodoIndex, 1);
-      await this.#fileUtiles.updateUserTodos(userId, todos);
+
+      if (todos.length === 0) {
+        await this.#fileUtiles.deleteUserTodos(userId);
+      } else {
+        await this.#fileUtiles.updateUserTodos(userId, todos);
+      }
       return todoId;
     } catch (error) {
       throw error;
