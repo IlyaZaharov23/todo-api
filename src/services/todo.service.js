@@ -39,15 +39,18 @@ class TodoService {
       const todos = await this.#fileUtiles.getUserTodos(userId);
       const targetTodo = todos.find((todo) => todo.id === todoId);
       if (!targetTodo) {
-        throw new ValidationError([
-          {
-            type: ERRORS_TYPE.FIELD,
-            value: title,
-            msg: ERRORS_TEMPLATE.TODO_NOT_FOUND,
-            path: ERRORS_PATH.TITLE,
-            location: ERRORS_LOCATION.BODY,
-          },
-        ]);
+        throw new ValidationError(
+          [
+            {
+              type: ERRORS_TYPE.FIELD,
+              value: title,
+              msg: ERRORS_TEMPLATE.TODO_NOT_FOUND,
+              path: ERRORS_PATH.TITLE,
+              location: ERRORS_LOCATION.BODY,
+            },
+          ],
+          404
+        );
       }
       targetTodo.title = title;
       await this.#fileUtiles.updateUserTodos(userId, todos);
@@ -61,15 +64,18 @@ class TodoService {
       const todos = await this.#fileUtiles.getUserTodos(userId);
       const targetTodo = todos.find((todo) => todo.id === todoId);
       if (!targetTodo) {
-        throw new ValidationError([
-          {
-            type: ERRORS_TYPE.FIELD,
-            value: isCompleted,
-            msg: ERRORS_TEMPLATE.TODO_NOT_FOUND,
-            path: ERRORS_PATH.TITLE,
-            location: ERRORS_LOCATION.BODY,
-          },
-        ]);
+        throw new ValidationError(
+          [
+            {
+              type: ERRORS_TYPE.FIELD,
+              value: isCompleted,
+              msg: ERRORS_TEMPLATE.TODO_NOT_FOUND,
+              path: ERRORS_PATH.TITLE,
+              location: ERRORS_LOCATION.BODY,
+            },
+          ],
+          404
+        );
       }
       targetTodo.isCompleted = isCompleted;
       await this.#fileUtiles.updateUserTodos(userId, todos);
@@ -83,14 +89,17 @@ class TodoService {
       const todos = await this.#fileUtiles.getUserTodos(userId);
       const targetTodoIndex = todos.findIndex((todo) => todo.id === todoId);
       if (targetTodoIndex === -1) {
-        throw new ValidationError([
-          {
-            type: ERRORS_TYPE.FIELD,
-            msg: ERRORS_TEMPLATE.TODO_NOT_FOUND,
-            path: ERRORS_PATH.TITLE,
-            location: ERRORS_LOCATION.BODY,
-          },
-        ]);
+        throw new ValidationError(
+          [
+            {
+              type: ERRORS_TYPE.FIELD,
+              msg: ERRORS_TEMPLATE.TODO_NOT_FOUND,
+              path: ERRORS_PATH.TITLE,
+              location: ERRORS_LOCATION.BODY,
+            },
+          ],
+          404
+        );
       }
       todos.splice(targetTodoIndex, 1);
 
