@@ -19,6 +19,10 @@ app.use("/api", mainRouter);
 
 Sentry.setupExpressErrorHandler(app);
 
+app.get("/test-error", (req, res) => {
+  throw new Error("Тестовая ошибка для Sentry");
+});
+
 app.listen(PORT, () => {
   console.log(`Server started on http://localhost:${PORT}`);
 });
