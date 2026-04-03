@@ -64,7 +64,7 @@ class TodoService {
         throw new ValidationError([
           {
             type: ERRORS_TYPE.FIELD,
-            value: title,
+            value: isCompleted,
             msg: ERRORS_TEMPLATE.TODO_NOT_FOUND,
             path: ERRORS_PATH.TITLE,
             location: ERRORS_LOCATION.BODY,

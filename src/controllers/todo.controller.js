@@ -1,4 +1,5 @@
 const TodoService = require("../services/todo.service");
+const ErrorHelpers = require("../helpers/ErrorHelpers");
 
 class TodoController {
   static async getTodos(req, res) {
@@ -7,7 +8,7 @@ class TodoController {
       const todos = await TodoService.getTodos(userId);
       res.send(todos);
     } catch (error) {
-      res.status(500).send(error.message);
+      ErrorHelpers.catchError(res, error, 500);
     }
   }
   static async createTodo(req, res) {
@@ -16,7 +17,7 @@ class TodoController {
       const newTodo = await TodoService.createTodo(title, userId);
       res.status(201).send(newTodo);
     } catch (error) {
-      res.status(500).send(error.message);
+      ErrorHelpers.catchError(res, error, 500);
     }
   }
   static async updateTodoTitle(req, res) {
@@ -26,10 +27,7 @@ class TodoController {
       const updateTodo = await TodoService.updateTodoTitle(title, id, userId);
       res.send(updateTodo);
     } catch (error) {
-      if (error.errors?.length) {
-        return res.status(404).send(error.errors);
-      }
-      res.status(500).send(error.message);
+      ErrorHelpers.catchError(res, error, 404);
     }
   }
   static async updateTodoCompleted(req, res) {
@@ -43,10 +41,7 @@ class TodoController {
       );
       res.send(updateTodo);
     } catch (error) {
-      if (error.errors?.length) {
-        return res.status(404).send(error.errors);
-      }
-      res.status(500).send(error.message);
+      ErrorHelpers.catchError(res, error, 404);
     }
   }
   static async deleteTodo(req, res) {
@@ -56,10 +51,7 @@ class TodoController {
       const deletedToId = await TodoService.deleteTodo(id, userId);
       res.status(200).send(deletedToId);
     } catch (error) {
-      if (error.errors?.length) {
-        return res.status(404).send(error.errors);
-      }
-      res.status(500).send(error.message);
+      ErrorHelpers.catchError(res, error, 404);
     }
   }
 }

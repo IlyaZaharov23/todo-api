@@ -1,0 +1,444 @@
+openapi: 3.0.0
+info:
+  title: Todo API
+  description: API for managing tasks and users authentication
+  version: 1.0.0
+paths:
+  /api/register:
+    post:
+      tags:
+      - User
+      summary: Creates new user with specified email and password
+      description: This request adds new user and returns it
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRegister"
+        required: true
+      responses:
+        "200":
+          description: User successfully registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400":
+          $ref: "#/components/responses/ValidationErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/login:
+    post:
+      tags:
+      - User
+      summary: Check user in system and if it exists returns token
+      description: This request check user in system and returns token if it exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLogin"
+        required: true
+      responses:
+        "200":
+          description: Successful authentication
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          $ref: "#/components/responses/ValidationErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/todos:
+    get:
+      tags:
+      - Todos
+      summary: Returns list of tasks for specified user
+      description: This request gets all user tasks
+      parameters:
+      - name: userId
+        in: query
+        description: User ID
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Tasks list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Todo"
+        "400":
+          $ref: "#/components/responses/ValidationErrorResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Todos
+      summary: Creates new todo for specified user
+      description: This request adds a new task and returns it
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTodoRequest"
+        required: true
+      responses:
+        "201":
+          description: Task successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        "400":
+          $ref: "#/components/responses/ValidationErrorResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+      - bearerAuth: []
+  /api/todos/{id}:
+    delete:
+      tags:
+      - Todos
+      summary: "Deletes todo with id={id}"
+      description: This request deletes todo by id and returns todo id
+      parameters:
+      - name: id
+        in: path
+        description: Task ID
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: userId
+        in: query
+        description: User ID
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Successfully deleted
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+        "400":
+          $ref: "#/components/responses/ValidationErrorResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ValidationError"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+      - bearerAuth: []
+    patch:
+      tags:
+      - Todos
+      summary: "Updates todo title with id={id}"
+      description: This requres updates task title and returns updated todo
+      parameters:
+      - name: id
+        in: path
+        description: Task ID
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTodoTitleRequest"
+        required: true
+      responses:
+        "200":
+          description: Task successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        "400":
+          $ref: "#/components/responses/ValidationErrorResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ValidationError"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+      - bearerAuth: []
+  /api/todos/{id}/isCompleted:
+    patch:
+      tags:
+      - Todos
+      summary: "Updates todo completed with id={id}"
+      description: This request updated todo completed status and returns updated todo
+      parameters:
+      - name: id
+        in: path
+        description: Task ID
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTodoCompletedRequest"
+        required: true
+      responses:
+        "200":
+          description: Status successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        "400":
+          $ref: "#/components/responses/ValidationErrorResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ValidationError"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+      - bearerAuth: []
+components:
+  schemas:
+    UserRegister:
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: example@example.com
+        password:
+          minLength: 6
+          type: string
+          description: "Password (at least 6 symbols, minimum 1 uppercase letter, 1 lowercase letter, 1 figure)"
+          format: password
+          example: Password123
+      additionalProperties: false
+    UserLogin:
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: example@example.com
+        password:
+          type: string
+          format: password
+          example: Password123
+      additionalProperties: false
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+      example:
+        id: 123e4567-e89b-12d3-a456-426614174000
+        email: example@example.com
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+    Todo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Task ID
+          format: uuid
+        title:
+          type: string
+          description: Task title
+        idUser:
+          type: string
+          description: User ID
+          format: uuid
+        isCompleted:
+          type: boolean
+      example:
+        id: 123e4567-e89b-12d3-a456-426614174000
+        title: Buy groceries
+        idUser: 123e4567-e89b-12d3-a456-426614174001
+        isCompleted: false
+    CreateTodoRequest:
+      required:
+      - title
+      - userId
+      type: object
+      properties:
+        title:
+          type: string
+          description: Task title
+          example: Buy groceries
+        userId:
+          type: string
+          description: User ID
+          format: uuid
+      additionalProperties: false
+    UpdateTodoTitleRequest:
+      required:
+      - title
+      - userId
+      type: object
+      properties:
+        title:
+          type: string
+          description: New task title
+          example: Buy groceries and vegetables
+        userId:
+          type: string
+          description: User ID
+          format: uuid
+      additionalProperties: false
+    UpdateTodoCompletedRequest:
+      required:
+      - isCompleted
+      - userId
+      type: object
+      properties:
+        isCompleted:
+          type: boolean
+          example: true
+        userId:
+          type: string
+          description: User ID
+          format: uuid
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        type:
+          type: string
+        value:
+          type: string
+        msg:
+          type: string
+        path:
+          type: string
+        location:
+          type: string
+      example:
+        type: field
+        value: invalid_value
+        msg: Field validation failed
+        path: fieldName
+        location: body
+    ErrorResponse:
+      type: string
+      example: Internal server error
+  responses:
+    UnauthorizedError:
+      description: Invalid token or not authorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ValidationError"
+    ValidationErrorResponse:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/ValidationError"
+  parameters:
+    UserIdQuery:
+      name: userId
+      in: query
+      description: User ID
+      required: true
+      schema:
+        type: string
+        format: uuid
+    TodoIdParam:
+      name: id
+      in: path
+      description: Task ID
+      required: true
+      schema:
+        type: string
+        format: uuid
+  securitySchemes:
+    bearerAuth:
+      type: http
+      description: JWT token
+      scheme: bearer
+      bearerFormat: JWT
