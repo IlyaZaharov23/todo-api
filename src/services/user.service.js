@@ -21,7 +21,7 @@ class UserService {
       const newUser = { email, password: hashedPassword, id };
       users.push(newUser);
       await this.#fileUtiles.updateUsers(users);
-      return id;
+      return { id, email };
     } catch (error) {
       throw error;
     }
@@ -64,7 +64,7 @@ class UserService {
         ]);
       }
       const token = TokenHelpers.createToken(targetUser);
-      return token;
+      return { token };
     } catch (error) {
       throw error;
     }
