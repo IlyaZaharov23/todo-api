@@ -19,8 +19,8 @@ app.use("/api", mainRouter);
 
 Sentry.setupExpressErrorHandler(app);
 
-app.get("/test-error", (req, res) => {
-  throw new Error("Тестовая ошибка для Sentry");
+app.get("/debug-sentry", function mainHandler(req, res) {
+  throw new Error("My first Sentry error!");
 });
 
 app.listen(PORT, () => {
