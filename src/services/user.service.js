@@ -70,7 +70,7 @@ class UserService {
         );
       }
       const token = TokenHelpers.createToken(targetUser);
-      return { token };
+      return { token, userId: targetUser.id };
     } catch (error) {
       throw error;
     }

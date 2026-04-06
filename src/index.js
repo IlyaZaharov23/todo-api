@@ -23,6 +23,10 @@ app.get("/debug-sentry", function mainHandler(req, res) {
   throw new Error("My first Sentry error!");
 });
 
-app.listen(PORT, () => {
-  console.log(`Server started on http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server started on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
