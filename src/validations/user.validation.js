@@ -1,8 +1,9 @@
 const { body, checkExact } = require("express-validator");
 const ValidationHelpers = require("../helpers/ValidationHelpers");
+const { ENTITY_PATH } = require("../constants/errors.template");
 
 const userRequirements = {
-  email: body("email")
+  email: body(ENTITY_PATH.EMAIL)
     .notEmpty()
     .withMessage("Email is required.")
     .isEmail()
@@ -13,7 +14,7 @@ const userRequirements = {
     await userValidationHelpers.isUserExist(value);
     return true;
   }),
-  password: body("password")
+  password: body(ENTITY_PATH.PASSWORD)
     .isLength({ min: 6 })
     .withMessage("Password must contain at least 6 symbols.")
     .matches(/[A-Z]/)

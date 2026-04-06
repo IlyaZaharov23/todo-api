@@ -1,5 +1,6 @@
 const { header, query, param, body, checkExact } = require("express-validator");
 const TokenHelpers = require("../helpers/TokenHelpers");
+const { ERROR_MESSAGES, ENTITY_PATH } = require("../constants/errors.template");
 
 const todoRequirements = {
   token: header("Authorization")
@@ -22,20 +23,26 @@ const todoRequirements = {
         if (verification.error === "jwt expired") {
           throw new Error("Token has expired. Please login again.");
         }
-        throw new Error("Invalid token. Authentication failed.");
+        throw new Error(ERROR_MESSAGES.INVALID_TOKEN);
       }
       return true;
     }),
-  queryUserId: query("userId").isUUID().withMessage("Invalid userId param."),
-  title: body("title").notEmpty().withMessage("Title cannot be empty."),
-  isCompleted: body("isCompleted")
+  queryUserId: query(ENTITY_PATH.USER_ID)
+    .isUUID()
+    .withMessage(ERROR_MESSAGES.INVALID_USER_ID),
+  title: body(ENTITY_PATH.TITLE)
+    .notEmpty()
+    .withMessage(ERROR_MESSAGES.EMPTY_TITLE),
+  isCompleted: body(ENTITY_PATH.IS_COMPLETED)
     .exists()
-    .withMessage("Field isCompleted is required.")
+    .withMessage(ERROR_MESSAGES.IS_COMPLETED_REQUIRED)
     .isBoolean()
-    .withMessage("Invalid isCompleted field value.")
+    .withMessage(ERROR_MESSAGES.INVALID_IS_COMPLETED)
     .toBoolean(),
-  bodyUserId: body("userId").isUUID().withMessage("Invalid userId param."),
-  todoId: param("id").isUUID().withMessage("Invalid ID param."),
+  bodyUserId: body(ENTITY_PATH.USER_ID)
+    .isUUID()
+    .withMessage(ERROR_MESSAGES.INVALID_USER_ID),
+  todoId: param(ENTITY_PATH.ID).isUUID().withMessage(ERROR_MESSAGES.INVALID_ID),
 };
 
 module.exports = {

@@ -1,10 +1,10 @@
 const { v4: uuid } = require("uuid");
 const FileUtiles = require("../utilities/FileUtiles");
 const {
-  ERRORS_TEMPLATE,
   ERRORS_TYPE,
-  ERRORS_PATH,
+  ENTITY_PATH,
   ERRORS_LOCATION,
+  ERROR_MESSAGES,
 } = require("../constants/errors.template");
 const ValidationError = require("../helpers/ValidationError");
 
@@ -44,8 +44,8 @@ class TodoService {
             {
               type: ERRORS_TYPE.FIELD,
               value: title,
-              msg: ERRORS_TEMPLATE.TODO_NOT_FOUND,
-              path: ERRORS_PATH.TITLE,
+              msg: ERROR_MESSAGES.TODO_NOT_FOUND,
+              path: ENTITY_PATH.TITLE,
               location: ERRORS_LOCATION.BODY,
             },
           ],
@@ -69,8 +69,8 @@ class TodoService {
             {
               type: ERRORS_TYPE.FIELD,
               value: isCompleted,
-              msg: ERRORS_TEMPLATE.TODO_NOT_FOUND,
-              path: ERRORS_PATH.TITLE,
+              msg: ERROR_MESSAGES.TODO_NOT_FOUND,
+              path: ENTITY_PATH.TITLE,
               location: ERRORS_LOCATION.BODY,
             },
           ],
@@ -93,8 +93,8 @@ class TodoService {
           [
             {
               type: ERRORS_TYPE.FIELD,
-              msg: ERRORS_TEMPLATE.TODO_NOT_FOUND,
-              path: ERRORS_PATH.TITLE,
+              msg: ERROR_MESSAGES.TODO_NOT_FOUND,
+              path: ENTITY_PATH.TITLE,
               location: ERRORS_LOCATION.BODY,
             },
           ],

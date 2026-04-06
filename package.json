@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "nodemon index.js --ignore 'db.json'",
-    "test": "mocha src/test/*.test.js"
+    "test": "mocha src/test/**/*.test.js"
   },
   "keywords": [],
   "author": "",
