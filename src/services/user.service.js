@@ -3,10 +3,10 @@ const FileUtiles = require("../utilities/FileUtiles");
 const CryptHelpers = require("../helpers/CryptHelpers");
 const TokenHelpers = require("../helpers/TokenHelpers");
 const {
-  ERRORS_TEMPLATE,
   ERRORS_TYPE,
   ERRORS_LOCATION,
-  ERRORS_PATH,
+  ENTITY_PATH,
+  ERROR_MESSAGES,
 } = require("../constants/errors.template");
 const ValidationError = require("../helpers/ValidationError");
 
@@ -36,15 +36,15 @@ class UserService {
             {
               type: ERRORS_TYPE.FIELD,
               value: data.email,
-              msg: ERRORS_TEMPLATE.AUTH_ERROR,
-              path: ERRORS_PATH.EMAIL,
+              msg: ERROR_MESSAGES.INVALID_LOGIN,
+              path: ENTITY_PATH.EMAIL,
               location: ERRORS_LOCATION.BODY,
             },
             {
               type: ERRORS_TYPE.FIELD,
               value: data.password,
-              msg: ERRORS_TEMPLATE.AUTH_ERROR,
-              path: ERRORS_PATH.PASSWORD,
+              msg: ERROR_MESSAGES.INVALID_LOGIN,
+              path: ENTITY_PATH.PASSWORD,
               location: ERRORS_LOCATION.BODY,
             },
           ],
@@ -61,8 +61,8 @@ class UserService {
             {
               type: ERRORS_TYPE.FIELD,
               value: data.password,
-              msg: ERRORS_TEMPLATE.AUTH_ERROR,
-              path: ERRORS_PATH.PASSWORD,
+              msg: ERROR_MESSAGES.INVALID_LOGIN,
+              path: ENTITY_PATH.PASSWORD,
               location: ERRORS_LOCATION.BODY,
             },
           ],
@@ -70,7 +70,7 @@ class UserService {
         );
       }
       const token = TokenHelpers.createToken(targetUser);
-      return { token };
+      return { token, userId: targetUser.id };
     } catch (error) {
       throw error;
     }

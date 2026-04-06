@@ -49,7 +49,7 @@ class TodoController {
       const { id } = req.params;
       const { userId } = req.query;
       const deletedToId = await TodoService.deleteTodo(id, userId);
-      res.status(200).send(deletedToId);
+      res.status(200).send({ id: deletedToId });
     } catch (error) {
       ErrorHelpers.catchError(res, error, 404);
     }
