@@ -52,7 +52,7 @@ module.exports = {
     todoRequirements.token,
     todoRequirements.title,
     checkExact([], {
-      message: "Only title and userId fields are allowed.",
+      message: "Only title field is allowed.",
     }),
   ],
   updateTodoTitle: [
@@ -60,7 +60,7 @@ module.exports = {
     todoRequirements.title,
     todoRequirements.todoId,
     checkExact([], {
-      message: "Only title and userId fields are allowed.",
+      message: "Only title field is allowed.",
     }),
   ],
   updateTodoCompleted: [
@@ -68,7 +68,7 @@ module.exports = {
     todoRequirements.isCompleted,
     todoRequirements.todoId,
     checkExact([], {
-      message: "Only isCompleted and userId fields are allowed.",
+      message: "Only isCompleted field is allowed.",
     }),
   ],
   deleteTodo: [todoRequirements.token, todoRequirements.todoId],
