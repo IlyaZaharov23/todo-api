@@ -1,5 +1,4 @@
-const { v4: uuid } = require("uuid");
-const MongoHelpers = require("../helpers/MongoHelpers");
+const User = require("../model/users.model");
 const CryptHelpers = require("../helpers/CryptHelpers");
 const TokenHelpers = require("../helpers/TokenHelpers");
 const {
@@ -8,35 +7,24 @@ const {
   ENTITY_PATH,
   ERROR_MESSAGES,
 } = require("../constants/errors.template");
-const ENTITIES = require('../constants/entities')
 const ValidationError = require("../helpers/ValidationError");
 
 class UserService {
-  static #COLLECTION = ENTITIES.USERS;
   static async createUser(data) {
     try {
       const { email, password } = data;
       const hashedPassword = await CryptHelpers.hashPassword(password);
-      const id = uuid();
-      const newUser = { email, password: hashedPassword, id };
-      const connection = await MongoHelpers.getConnection();
-      const db = MongoHelpers.useDefaultDb(connection);
-      await db.collection(this.#COLLECTION).insertOne(newUser);
-      await connection.close();
-      return { id, email };
+      const sendedData = { email, password: hashedPassword };
+      const newUser = await new User(sendedData).save();
+      return { id: newUser._id, email: newUser.email };
     } catch (error) {
       throw error;
     }
   }
   static async authUser(data) {
     try {
-      const connection = await MongoHelpers.getConnection();
-      const db = MongoHelpers.useDefaultDb(connection);
-      const collection = db.collection(this.#COLLECTION);
+      const targetUser = await User.findOne({ email: data.email });
 
-      const targetUser = await collection.findOne({ email: data.email });
-      await connection.close();
-      
       if (!targetUser) {
         throw new ValidationError(
           [
@@ -76,7 +64,7 @@ class UserService {
           401
         );
       }
-      const token = TokenHelpers.createToken(targetUser);
+      const token = TokenHelpers.createToken(targetUser.toObject());
       return { token, userId: targetUser.id };
     } catch (error) {
       throw error;
