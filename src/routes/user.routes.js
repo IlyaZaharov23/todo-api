@@ -8,13 +8,13 @@ const userRouter = Router();
 userRouter.post(
   "/login",
   userValidator.authUser,
-  ValidationMiddleware.chechValidation,
+  ValidationMiddleware.checkValidation,
   UserController.userAuth
 );
 userRouter.post(
   "/register",
   userValidator.createUser,
-  ValidationMiddleware.chechValidation,
+  ValidationMiddleware.checkValidation,
   UserController.userRegister
 );
 

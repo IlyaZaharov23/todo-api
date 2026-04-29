@@ -17,14 +17,15 @@ const todoRequirements = {
     .customSanitizer((value) => value.split(" ")[1])
     .isJWT()
     .withMessage("Invalid JWT token.")
-    .custom((token) => {
-      const verification = TokenHelpers.checkToken(token);
+    .custom((token, {req}) => {
+      const verification = TokenHelpers.checkToken(token);      
       if (!verification.isValid) {
         if (verification.error === "jwt expired") {
           throw new Error("Token has expired. Please login again.");
         }
         throw new Error(ERROR_MESSAGES.INVALID_TOKEN);
       }
+      req.user = { id: verification.decoded.id };
       return true;
     }),
   queryUserId: query(ENTITY_PATH.USER_ID)
@@ -46,11 +47,10 @@ const todoRequirements = {
 };
 
 module.exports = {
-  getTodos: [todoRequirements.token, todoRequirements.queryUserId],
+  getTodos: [todoRequirements.token],
   createTodo: [
     todoRequirements.token,
     todoRequirements.title,
-    todoRequirements.bodyUserId,
     checkExact([], {
       message: "Only title and userId fields are allowed.",
     }),
@@ -58,7 +58,6 @@ module.exports = {
   updateTodoTitle: [
     todoRequirements.token,
     todoRequirements.title,
-    todoRequirements.bodyUserId,
     todoRequirements.todoId,
     checkExact([], {
       message: "Only title and userId fields are allowed.",
@@ -67,15 +66,10 @@ module.exports = {
   updateTodoCompleted: [
     todoRequirements.token,
     todoRequirements.isCompleted,
-    todoRequirements.bodyUserId,
     todoRequirements.todoId,
     checkExact([], {
       message: "Only isCompleted and userId fields are allowed.",
     }),
   ],
-  deleteTodo: [
-    todoRequirements.token,
-    todoRequirements.queryUserId,
-    todoRequirements.todoId,
-  ],
+  deleteTodo: [todoRequirements.token, todoRequirements.todoId],
 };

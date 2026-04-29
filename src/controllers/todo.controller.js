@@ -4,7 +4,7 @@ const ErrorHelpers = require("../helpers/ErrorHelpers");
 class TodoController {
   static async getTodos(req, res) {
     try {
-      const { userId } = req.query;
+      const userId = req.user.id 
       const todos = await TodoService.getTodos(userId);
       res.send(todos);
     } catch (error) {
@@ -13,7 +13,8 @@ class TodoController {
   }
   static async createTodo(req, res) {
     try {
-      const { title, userId } = req.body;
+      const { title } = req.body;      
+      const userId = req.user.id
       const newTodo = await TodoService.createTodo(title, userId);
       res.status(201).send(newTodo);
     } catch (error) {
@@ -23,7 +24,8 @@ class TodoController {
   static async updateTodoTitle(req, res) {
     try {
       const { id } = req.params;
-      const { title, userId } = req.body;
+      const { title } = req.body;
+      const userId = req.user.id
       const updateTodo = await TodoService.updateTodoTitle(title, id, userId);
       res.send(updateTodo);
     } catch (error) {
@@ -33,7 +35,8 @@ class TodoController {
   static async updateTodoCompleted(req, res) {
     try {
       const { id } = req.params;
-      const { isCompleted, userId } = req.body;
+      const { isCompleted } = req.body;
+      const userId = req.user.id
       const updateTodo = await TodoService.updateTodoCompleted(
         isCompleted,
         id,
@@ -47,7 +50,7 @@ class TodoController {
   static async deleteTodo(req, res) {
     try {
       const { id } = req.params;
-      const { userId } = req.query;
+      const userId = req.user.id
       const deletedToId = await TodoService.deleteTodo(id, userId);
       res.status(200).send({ id: deletedToId });
     } catch (error) {

@@ -1,7 +1,7 @@
 const { validationResult } = require("express-validator");
 
 class ValidationMiddleware {
-  static async chechValidation(req, res, next) {
+  static async checkValidation(req, res, next) {
     const errors = validationResult(req);
     const hasAuthorizationError = errors
       .array()

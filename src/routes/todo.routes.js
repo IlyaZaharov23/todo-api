@@ -9,30 +9,30 @@ todoRouter
   .route("/todos")
   .get(
     todoValidator.getTodos,
-    ValidationMiddleware.chechValidation,
+    ValidationMiddleware.checkValidation,
     TodoController.getTodos
   )
   .post(
     todoValidator.createTodo,
-    ValidationMiddleware.chechValidation,
+    ValidationMiddleware.checkValidation,
     TodoController.createTodo
   );
 todoRouter
   .route("/todos/:id")
   .patch(
     todoValidator.updateTodoTitle,
-    ValidationMiddleware.chechValidation,
+    ValidationMiddleware.checkValidation,
     TodoController.updateTodoTitle
   )
   .delete(
     todoValidator.deleteTodo,
-    ValidationMiddleware.chechValidation,
+    ValidationMiddleware.checkValidation,
     TodoController.deleteTodo
   );
 todoRouter.patch(
   "/todos/:id/isCompleted",
   todoValidator.updateTodoCompleted,
-  ValidationMiddleware.chechValidation,
+  ValidationMiddleware.checkValidation,
   TodoController.updateTodoCompleted
 );
 

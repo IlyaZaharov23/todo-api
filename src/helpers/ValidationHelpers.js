@@ -1,11 +1,14 @@
-const FileUtiles = require("../utilities/FileUtiles");
 const { ERROR_MESSAGES } = require("../constants/errors.template");
+const MongoHelpers = require("./MongoHelpers");
+const ENTITIES = require('../constants/entities')
 
 class ValidationHelpers {
-  #fileUtiles = new FileUtiles();
+  #COLLECTION = ENTITIES.USERS
   async isUserExist(email) {
-    const users = await this.#fileUtiles.getUsers();
-    const targetUser = users.find((user) => user.email === email);
+    const connection = await MongoHelpers.getConnection();
+    const db = MongoHelpers.useDefaultDb(connection);
+    const collection = db.collection(this.#COLLECTION)
+    const targetUser = await collection.findOne({ email });
     if (targetUser) {
       throw new Error(ERROR_MESSAGES.USER_EXISTS);
     }
