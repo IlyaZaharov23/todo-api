@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 
-const MONGO_URL = process.env.NODE_ENV === "PRODUCTION" ? process.env.MONGO_DB_URI : `${process.env.MONGO_DB_URI}/${process.env.MONGO_DB_NAME}`;
+const MONGO_URL = process.env.MONGO_DB_URI;
 
 async function connectDB() {
-    try {        
-        await mongoose.connect(MONGO_URL)
-    } catch (error) {
-        return error
-    }
+  try {
+    await mongoose.connect(MONGO_URL, { dbName: process.env.MONGO_DB_NAME });
+  } catch (error) {
+    return error;
+  }
 }
 
-module.exports = connectDB
+module.exports = connectDB;
