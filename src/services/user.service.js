@@ -1,5 +1,5 @@
 const { v4: uuid } = require("uuid");
-const FileUtiles = require("../utilities/FileUtiles");
+const MongoHelpers = require("../helpers/MongoHelpers");
 const CryptHelpers = require("../helpers/CryptHelpers");
 const TokenHelpers = require("../helpers/TokenHelpers");
 const {
@@ -8,19 +8,21 @@ const {
   ENTITY_PATH,
   ERROR_MESSAGES,
 } = require("../constants/errors.template");
+const ENTITIES = require('../constants/entities')
 const ValidationError = require("../helpers/ValidationError");
 
 class UserService {
-  static #fileUtiles = new FileUtiles();
+  static #COLLECTION = ENTITIES.USERS;
   static async createUser(data) {
     try {
-      const users = await this.#fileUtiles.getUsers();
       const { email, password } = data;
       const hashedPassword = await CryptHelpers.hashPassword(password);
       const id = uuid();
       const newUser = { email, password: hashedPassword, id };
-      users.push(newUser);
-      await this.#fileUtiles.updateUsers(users);
+      const connection = await MongoHelpers.getConnection();
+      const db = MongoHelpers.useDefaultDb(connection);
+      await db.collection(this.#COLLECTION).insertOne(newUser);
+      await connection.close();
       return { id, email };
     } catch (error) {
       throw error;
@@ -28,8 +30,13 @@ class UserService {
   }
   static async authUser(data) {
     try {
-      const users = await this.#fileUtiles.getUsers();
-      const targetUser = users.find((user) => user.email === data.email);
+      const connection = await MongoHelpers.getConnection();
+      const db = MongoHelpers.useDefaultDb(connection);
+      const collection = db.collection(this.#COLLECTION);
+
+      const targetUser = await collection.findOne({ email: data.email });
+      await connection.close();
+      
       if (!targetUser) {
         throw new ValidationError(
           [

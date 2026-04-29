@@ -10,6 +10,7 @@ class TokenHelpers {
     const secretKey = process.env.JWT_SECRET_KEY;
     try {
       const decoded = jwt.verify(token, secretKey);
+      // console.log(decoded);
       return { isValid: true, decoded };
     } catch (error) {
       return { isValid: false, error: error.message };
