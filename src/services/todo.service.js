@@ -1,57 +1,41 @@
-const { v4: uuid } = require("uuid");
-const MongoHelpers = require("../helpers/MongoHelpers");
+const Todo = require("../model/todo.model");
 const {
   ERRORS_TYPE,
   ENTITY_PATH,
   ERRORS_LOCATION,
   ERROR_MESSAGES,
 } = require("../constants/errors.template");
-const ENTITIES = require("../constants/entities");
 const ValidationError = require("../helpers/ValidationError");
 
 class TodoService {
-  static #COLLECTION = ENTITIES.TODOS;
   static async getTodos(idUser) {
     try {
-      const connection = await MongoHelpers.getConnection();
-      const db = MongoHelpers.useDefaultDb(connection);
-      const collection = db.collection(this.#COLLECTION);
-      const todos = await collection.find({ idUser }).toArray();
-      await connection.close();
+      const todos = await Todo.find({ idUser });
       return todos;
     } catch (error) {
-      throw error
+      throw error;
     }
   }
   static async createTodo(title, userId) {
     try {
-      const newTodo = {
+      const sendedData = {
         title,
         idUser: userId,
-        id: uuid(),
         isCompleted: false,
       };
-      const connection = await MongoHelpers.getConnection();
-      const db = MongoHelpers.useDefaultDb(connection);
-      const collection = db.collection(this.#COLLECTION);
-      await collection.insertOne(newTodo);
-      await connection.close();
-      return newTodo;
+      const newTodo = await new Todo(sendedData).save();
+      return newTodo.toObject();
     } catch (error) {
       throw error;
     }
   }
   static async updateTodoTitle(title, todoId, userId) {
     try {
-      const connection = await MongoHelpers.getConnection();
-      const db = MongoHelpers.useDefaultDb(connection);
-      const collection = db.collection(this.#COLLECTION);
-      const updatedTodo = await collection.findOneAndUpdate(
-        { id: todoId, idUser: userId },
+      const updatedTodo = await Todo.findByIdAndUpdate(
+        { _id: todoId, idUser: userId },
         { $set: { title } },
-        { returnDocument: "after" }
+        { new: true }
       );
-      await connection.close();
       if (!updatedTodo) {
         throw new ValidationError(
           [
@@ -73,15 +57,11 @@ class TodoService {
   }
   static async updateTodoCompleted(isCompleted, todoId, userId) {
     try {
-      const connection = await MongoHelpers.getConnection();
-      const db = MongoHelpers.useDefaultDb(connection);
-      const collection = db.collection(this.#COLLECTION);
-      const updatedTodo = await collection.findOneAndUpdate(
-        { id: todoId, idUser: userId },
+      const updatedTodo = await Todo.findOneAndUpdate(
+        { _id: todoId, idUser: userId },
         { $set: { isCompleted } },
-        { returnDocument: "after" }
+        { new: true }
       );
-      await connection.close();
       if (!updatedTodo) {
         throw new ValidationError(
           [
@@ -103,10 +83,7 @@ class TodoService {
   }
   static async deleteTodo(todoId, userId) {
     try {
-      const connection = await MongoHelpers.getConnection();
-      const db = MongoHelpers.useDefaultDb(connection);
-      const collection = db.collection(this.#COLLECTION);
-      const result = await collection.deleteOne({ id: todoId, idUser: userId });
+      const result = await Todo.deleteOne({ _id: todoId, idUser: userId });
       if (result.deletedCount === 0) {
         throw new ValidationError(
           [

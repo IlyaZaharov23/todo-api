@@ -1,4 +1,4 @@
-const { header, query, param, body, checkExact } = require("express-validator");
+const { header, param, body, checkExact } = require("express-validator");
 const TokenHelpers = require("../helpers/TokenHelpers");
 const { ERROR_MESSAGES, ENTITY_PATH } = require("../constants/errors.template");
 
@@ -17,20 +17,17 @@ const todoRequirements = {
     .customSanitizer((value) => value.split(" ")[1])
     .isJWT()
     .withMessage("Invalid JWT token.")
-    .custom((token, {req}) => {
-      const verification = TokenHelpers.checkToken(token);      
+    .custom((token, { req }) => {
+      const verification = TokenHelpers.checkToken(token);
       if (!verification.isValid) {
         if (verification.error === "jwt expired") {
           throw new Error("Token has expired. Please login again.");
         }
         throw new Error(ERROR_MESSAGES.INVALID_TOKEN);
       }
-      req.user = { id: verification.decoded.id };
+      req.user = { id: verification.decoded._id };
       return true;
     }),
-  queryUserId: query(ENTITY_PATH.USER_ID)
-    .isUUID()
-    .withMessage(ERROR_MESSAGES.INVALID_USER_ID),
   title: body(ENTITY_PATH.TITLE)
     .notEmpty()
     .withMessage(ERROR_MESSAGES.EMPTY_TITLE),
@@ -40,10 +37,9 @@ const todoRequirements = {
     .isBoolean()
     .withMessage(ERROR_MESSAGES.INVALID_IS_COMPLETED)
     .toBoolean(),
-  bodyUserId: body(ENTITY_PATH.USER_ID)
-    .isUUID()
-    .withMessage(ERROR_MESSAGES.INVALID_USER_ID),
-  todoId: param(ENTITY_PATH.ID).isUUID().withMessage(ERROR_MESSAGES.INVALID_ID),
+  todoId: param(ENTITY_PATH.ID)
+    .isMongoId()
+    .withMessage(ERROR_MESSAGES.INVALID_ID),
 };
 
 module.exports = {

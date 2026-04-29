@@ -14,7 +14,7 @@ class TodoController {
   static async createTodo(req, res) {
     try {
       const { title } = req.body;      
-      const userId = req.user.id
+      const userId = req.user.id      
       const newTodo = await TodoService.createTodo(title, userId);
       res.status(201).send(newTodo);
     } catch (error) {
