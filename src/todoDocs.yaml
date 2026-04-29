@@ -7,7 +7,7 @@ paths:
   /api/register:
     post:
       tags:
-      - User
+        - User
       summary: Creates new user with specified email and password
       description: This request adds new user and returns it
       requestBody:
@@ -34,7 +34,7 @@ paths:
   /api/login:
     post:
       tags:
-      - User
+        - User
       summary: Check user in system and if it exists returns token
       description: This request check user in system and returns token if it exists
       requestBody:
@@ -61,17 +61,9 @@ paths:
   /api/todos:
     get:
       tags:
-      - Todos
-      summary: Returns list of tasks for specified user
-      description: This request gets all user tasks
-      parameters:
-      - name: userId
-        in: query
-        description: User ID
-        required: true
-        schema:
-          type: string
-          format: uuid
+        - Todos
+      summary: Returns list of tasks for authenticated user
+      description: This request gets all tasks for the authenticated user
       responses:
         "200":
           description: Tasks list
@@ -92,11 +84,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
       security:
-      - bearerAuth: []
+        - bearerAuth: []
     post:
       tags:
-      - Todos
-      summary: Creates new todo for specified user
+        - Todos
+      summary: Creates new todo for authenticated user
       description: This request adds a new task and returns it
       requestBody:
         content:
@@ -122,28 +114,21 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
       security:
-      - bearerAuth: []
+        - bearerAuth: []
   /api/todos/{id}:
     delete:
       tags:
-      - Todos
+        - Todos
       summary: "Deletes todo with id={id}"
       description: This request deletes todo by id and returns todo id
       parameters:
-      - name: id
-        in: path
-        description: Task ID
-        required: true
-        schema:
-          type: string
-          format: uuid
-      - name: userId
-        in: query
-        description: User ID
-        required: true
-        schema:
-          type: string
-          format: uuid
+        - name: id
+          in: path
+          description: Task ID
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         "200":
           description: Successfully deleted
@@ -171,20 +156,20 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
       security:
-      - bearerAuth: []
+        - bearerAuth: []
     patch:
       tags:
-      - Todos
+        - Todos
       summary: "Updates todo title with id={id}"
-      description: This requres updates task title and returns updated todo
+      description: This request updates task title and returns updated todo
       parameters:
-      - name: id
-        in: path
-        description: Task ID
-        required: true
-        schema:
-          type: string
-          format: uuid
+        - name: id
+          in: path
+          description: Task ID
+          required: true
+          schema:
+            type: string
+            format: uuid
       requestBody:
         content:
           application/json:
@@ -217,21 +202,21 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
       security:
-      - bearerAuth: []
+        - bearerAuth: []
   /api/todos/{id}/isCompleted:
     patch:
       tags:
-      - Todos
+        - Todos
       summary: "Updates todo completed with id={id}"
-      description: This request updated todo completed status and returns updated todo
+      description: This request updates todo completed status and returns updated todo
       parameters:
-      - name: id
-        in: path
-        description: Task ID
-        required: true
-        schema:
-          type: string
-          format: uuid
+        - name: id
+          in: path
+          description: Task ID
+          required: true
+          schema:
+            type: string
+            format: uuid
       requestBody:
         content:
           application/json:
@@ -264,13 +249,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
       security:
-      - bearerAuth: []
+        - bearerAuth: []
 components:
   schemas:
     UserRegister:
       required:
-      - email
-      - password
+        - email
+        - password
       type: object
       properties:
         email:
@@ -286,8 +271,8 @@ components:
       additionalProperties: false
     UserLogin:
       required:
-      - email
-      - password
+        - email
+        - password
       type: object
       properties:
         email:
@@ -327,7 +312,7 @@ components:
         title:
           type: string
           description: Task title
-        idUser:
+        userId:
           type: string
           description: User ID
           format: uuid
@@ -336,51 +321,36 @@ components:
       example:
         id: 123e4567-e89b-12d3-a456-426614174000
         title: Buy groceries
-        idUser: 123e4567-e89b-12d3-a456-426614174001
+        userId: 123e4567-e89b-12d3-a456-426614174001
         isCompleted: false
     CreateTodoRequest:
       required:
-      - title
-      - userId
+        - title
       type: object
       properties:
         title:
           type: string
           description: Task title
           example: Buy groceries
-        userId:
-          type: string
-          description: User ID
-          format: uuid
       additionalProperties: false
     UpdateTodoTitleRequest:
       required:
-      - title
-      - userId
+        - title
       type: object
       properties:
         title:
           type: string
           description: New task title
           example: Buy groceries and vegetables
-        userId:
-          type: string
-          description: User ID
-          format: uuid
       additionalProperties: false
     UpdateTodoCompletedRequest:
       required:
-      - isCompleted
-      - userId
+        - isCompleted
       type: object
       properties:
         isCompleted:
           type: boolean
           example: true
-        userId:
-          type: string
-          description: User ID
-          format: uuid
       additionalProperties: false
     ValidationError:
       type: object
@@ -419,23 +389,6 @@ components:
             type: array
             items:
               $ref: "#/components/schemas/ValidationError"
-  parameters:
-    UserIdQuery:
-      name: userId
-      in: query
-      description: User ID
-      required: true
-      schema:
-        type: string
-        format: uuid
-    TodoIdParam:
-      name: id
-      in: path
-      description: Task ID
-      required: true
-      schema:
-        type: string
-        format: uuid
   securitySchemes:
     bearerAuth:
       type: http
