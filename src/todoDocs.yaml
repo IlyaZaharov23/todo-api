@@ -128,7 +128,6 @@ paths:
           required: true
           schema:
             type: string
-            format: uuid
       responses:
         "200":
           description: Successfully deleted
@@ -136,7 +135,6 @@ paths:
             application/json:
               schema:
                 type: string
-                format: uuid
         "400":
           $ref: "#/components/responses/ValidationErrorResponse"
         "401":
@@ -169,7 +167,6 @@ paths:
           required: true
           schema:
             type: string
-            format: uuid
       requestBody:
         content:
           application/json:
@@ -216,7 +213,6 @@ paths:
           required: true
           schema:
             type: string
-            format: uuid
       requestBody:
         content:
           application/json:
@@ -308,7 +304,6 @@ components:
         id:
           type: string
           description: Task ID
-          format: uuid
         title:
           type: string
           description: Task title
@@ -319,7 +314,7 @@ components:
         isCompleted:
           type: boolean
       example:
-        id: 123e4567-e89b-12d3-a456-426614174000
+        id: 507f1f77bcf86cd799439011
         title: Buy groceries
         userId: 123e4567-e89b-12d3-a456-426614174001
         isCompleted: false
