@@ -38,7 +38,7 @@ const todoRequirements = {
     .withMessage(ERROR_MESSAGES.INVALID_IS_COMPLETED)
     .toBoolean(),
   todoId: param(ENTITY_PATH.ID)
-    .isMongoId()
+    .isUUID()
     .withMessage(ERROR_MESSAGES.INVALID_ID),
 };
 
